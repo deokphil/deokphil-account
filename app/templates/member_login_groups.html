@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-card">
+    <h2>내 그룹 선택</h2>
+
+    {% if not groups %}
+        <p class="empty-msg">아직 생성된 그룹이 없습니다.</p>
+    {% else %}
+        <div class="group-list">
+            {% for g in groups %}
+                <a href="/member/login/{{ g.id }}" class="group-list-item">
+                    <span class="group-list-name">
+                        <span class="group-tab-dot" style="background:{{ g.theme_color }};"></span>{{ g.name }}
+                    </span>
+                    <span class="group-list-arrow">›</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <p class="back-link"><a href="/">← 메인으로</a></p>
+</div>
+{% endblock %}

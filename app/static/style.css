@@ -1,0 +1,436 @@
+:root {
+    --bg: #f7f5f0;
+    --accent: #2f6f4f;
+    --text: #2b2b2b;
+    --card-bg: #ffffff;
+    --border: #e0ddd4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.site-header {
+    background: var(--accent);
+    color: white;
+    padding: 1.2rem 1.5rem;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.site-main {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.lead {
+    text-align: center;
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+.role-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.role-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    text-align: center;
+}
+
+.role-card h2 {
+    font-size: 1.05rem;
+    margin: 0 0 0.4rem 0;
+    color: var(--accent);
+}
+
+.role-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.status-note {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.site-footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+.role-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: box-shadow 0.15s ease;
+}
+
+.role-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.role-card-disabled {
+    opacity: 0.6;
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    background: #eee;
+    color: #888;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+}
+
+/* 로그인/폼 카드 */
+.form-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.form-card h2 {
+    margin-top: 0;
+    color: var(--accent);
+}
+
+.form-card label {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.form-card input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.form-card button {
+    margin-top: 1.2rem;
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.error-msg {
+    color: #b23a3a;
+    font-size: 0.85rem;
+}
+
+.info-msg {
+    color: var(--accent);
+    font-size: 0.85rem;
+}
+
+.pin-form {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.pin-form input {
+    width: 70px;
+    padding: 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.pin-form button {
+    padding: 0.3rem 0.6rem;
+    background: #888;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.danger-btn {
+    padding: 0.3rem 0.7rem;
+    background: #b23a3a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.assigned-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: #eef5ef;
+    color: var(--accent);
+    padding: 0.15rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    margin: 0.1rem;
+}
+
+.tag-remove-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0 0.1rem;
+    line-height: 1;
+}
+
+.toggle-btn {
+    padding: 0.5rem 1.2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.color-picker-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.color-picker-label input[type="color"] {
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+}
+
+.color-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    vertical-align: middle;
+}
+
+.group-tab-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.back-link a {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* 대시보드 */
+.dashboard { max-width: 900px; }
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.logout-link {
+    font-size: 0.85rem;
+    color: #888;
+    text-decoration: none;
+}
+
+.panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.panel h3 {
+    margin-top: 0;
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+.inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.inline-form input,
+.inline-form select {
+    padding: 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.inline-form button {
+    padding: 0.45rem 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.data-table th, .data-table td {
+    text-align: left;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.group-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.group-tab {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.88rem;
+}
+
+.group-tab.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.tag {
+    font-size: 0.7rem;
+    background: #eef5ef;
+    color: var(--accent);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.meta-line {
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.hint-note {
+    color: #999;
+    font-size: 0.78rem;
+    margin-top: 0.4rem;
+}
+
+.empty-msg {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.balance-panel {
+    text-align: center;
+}
+
+.balance-label {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.balance-amount {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin: 0.3rem 0;
+}
+
+.group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.group-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease;
+}
+
+.group-list-item:hover {
+    background: #f2f0e9;
+}
+
+.group-list-name {
+    font-weight: 500;
+}
+
+.group-list-arrow {
+    color: #aaa;
+    font-size: 1.2rem;
+}

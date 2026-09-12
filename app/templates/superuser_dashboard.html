@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dash-header">
+        <h2>수퍼유저 대시보드</h2>
+        <a href="/logout" class="logout-link">로그아웃 ({{ user.username }})</a>
+    </div>
+
+    {% if info %}
+        <p class="info-msg">{{ info }}</p>
+    {% endif %}
+
+    <section class="panel">
+        <h3>비활성 그룹 점검</h3>
+        <p class="meta-line">
+            {{ archive_days|default(180) }}일간 활동 없으면 자동 아카이브, 아카이브 후 30일 뒤 완전 삭제됩니다.
+            (매일 자동 실행되지만 지금 바로 확인해볼 수도 있습니다.)
+        </p>
+        <form method="post" action="/superuser/run-inactive-check">
+            <button type="submit">지금 점검 실행</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h3>그룹 생성</h3>
+        <form method="post" action="/superuser/groups" class="inline-form">
+            <input type="text" name="name" placeholder="그룹 이름 (예: 3반 달란트 시장)" required>
+
+            <select name="economy_type">
+                <option value="CLOSED">제로섬 (카드게임형)</option>
+                <option value="OPEN">개방형 (달란트 시장형)</option>
+            </select>
+
+            <input type="number" name="seed_money" placeholder="시드머니" value="0" step="1">
+
+            <input type="text" name="currency_label" placeholder="단위 (원/포인트/달란트)" value="원">
+
+            <label class="color-picker-label">
+                스킨 색상
+                <input type="color" name="theme_color" value="#2f6f4f">
+            </label>
+
+            <label class="checkbox-label">
+                <input type="checkbox" name="allow_negative_balance" value="true" checked>
+                음수 잔액 허용
+            </label>
+
+            <button type="submit">그룹 생성</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h3>그룹 관리자 계정 생성</h3>
+        <form method="post" action="/superuser/admins" class="inline-form">
+            <input type="text" name="username" placeholder="관리자 아이디" required>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <select name="group_id" required>
+                <option value="" disabled selected>담당 그룹 선택</option>
+                {% for g in groups %}
+                    <option value="{{ g.id }}">{{ g.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">관리자 생성</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h3>그룹 목록 ({{ groups|length }}개)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>색상</th><th>이름</th><th>코드</th><th>유형</th><th>시드머니</th><th>단위</th><th>상태</th><th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for g in groups %}
+                <tr>
+                    <td><span class="color-swatch" style="background:{{ g.theme_color }};"></span></td>
+                    <td>{{ g.name }}</td>
+                    <td><code>{{ g.group_code }}</code></td>
+                    <td>{{ "제로섬" if g.economy_type.value == "CLOSED" else "개방형" }}</td>
+                    <td>{{ g.seed_money }}</td>
+                    <td>{{ g.currency_label }}</td>
+                    <td>{{ g.status.value }}</td>
+                    <td>
+                        <form method="post" action="/superuser/groups/{{ g.id }}/delete"
+                              onsubmit="return confirm('정말 \'{{ g.name }}\' 그룹을 삭제할까요? 멤버와 거래내역이 모두 함께 삭제됩니다.');">
+                            <button type="submit" class="danger-btn">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel">
+        <h3>아카이브된 그룹 ({{ archived_groups|length }}개)</h3>
+        {% if not archived_groups %}
+            <p class="empty-msg">아카이브된 그룹이 없습니다.</p>
+        {% else %}
+            <table class="data-table">
+                <thead>
+                    <tr><th>이름</th><th>아카이브 시각</th><th>복구</th><th>즉시 삭제</th></tr>
+                </thead>
+                <tbody>
+                    {% for g in archived_groups %}
+                    <tr>
+                        <td>{{ g.name }}</td>
+                        <td>{{ g.archived_at.strftime("%Y-%m-%d %H:%M") if g.archived_at else "-" }}</td>
+                        <td>
+                            <form method="post" action="/superuser/groups/{{ g.id }}/reactivate">
+                                <button type="submit">복구</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" action="/superuser/groups/{{ g.id }}/delete"
+                                  onsubmit="return confirm('정말 \'{{ g.name }}\' 그룹을 지금 완전히 삭제할까요?');">
+                                <button type="submit" class="danger-btn">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <h3>관리자 목록 ({{ admins|length }}명)</h3>
+        <table class="data-table">
+            <thead><tr><th>아이디</th><th>담당 그룹</th><th>그룹 추가 배정</th><th>비밀번호 변경</th><th>삭제</th></tr></thead>
+            <tbody>
+                {% for a in admins %}
+                <tr>
+                    <td>{{ a.username }}</td>
+                    <td>
+                        {% for gid, gname in admin_assigned_groups[a.id] %}
+                            <span class="assigned-tag">
+                                {{ gname }}
+                                <form method="post" action="/superuser/admins/{{ a.id }}/unassign-group" style="display:inline;">
+                                    <input type="hidden" name="group_id" value="{{ gid }}">
+                                    <button type="submit" class="tag-remove-btn" title="배정 해제">×</button>
+                                </form>
+                            </span>
+                        {% else %}
+                            <span class="empty-msg">담당 그룹 없음</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <form method="post" action="/superuser/admins/{{ a.id }}/assign-group" class="pin-form">
+                            <select name="group_id" required>
+                                <option value="" disabled selected>그룹 선택</option>
+                                {% for g in groups %}
+                                    <option value="{{ g.id }}">{{ g.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit">추가</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="/superuser/admins/{{ a.id }}/password" class="pin-form">
+                            <input type="password" name="new_password" placeholder="새 비밀번호" required>
+                            <button type="submit">변경</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="/superuser/admins/{{ a.id }}/delete"
+                              onsubmit="return confirm('정말 \'{{ a.username }}\' 관리자 계정을 삭제할까요?');">
+                            <button type="submit" class="danger-btn">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
+{% endblock %}

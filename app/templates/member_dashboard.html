@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard" style="--accent: {{ group.theme_color }};">
+    <div class="dash-header">
+        <h2>{{ member.name }}님의 계좌</h2>
+        <a href="/member/logout" class="logout-link">로그아웃</a>
+    </div>
+
+    <section class="panel balance-panel">
+        <p class="balance-label">현재 잔액</p>
+        <p class="balance-amount">{{ member.balance }} {{ group.currency_label }}</p>
+        <p class="meta-line">{{ group.name }}</p>
+    </section>
+
+    <section class="panel">
+        <h3>내 거래 내역</h3>
+        <table class="data-table">
+            <thead><tr><th>시각</th><th>유형</th><th>금액</th><th>메모</th></tr></thead>
+            <tbody>
+                {% for t in my_transactions %}
+                <tr>
+                    <td>{{ t.created_at.strftime("%m-%d %H:%M") }}</td>
+                    <td>{{ t.type.value }}</td>
+                    <td>{{ t.amount }}</td>
+                    <td>{{ t.memo or "" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel">
+        <h3>우리 그룹 전체 잔액 분포 (익명)</h3>
+        <button type="button" id="toggleChartBtn" class="toggle-btn">그래프 보기</button>
+        <div id="chartWrapper" style="display:none; margin-top:1rem;">
+            <canvas id="anonChart" height="120"></canvas>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+    let anonChartInstance = null;
+
+    document.getElementById('toggleChartBtn').addEventListener('click', function () {
+        const wrapper = document.getElementById('chartWrapper');
+        const isHidden = wrapper.style.display === 'none';
+        wrapper.style.display = isHidden ? 'block' : 'none';
+        this.textContent = isHidden ? '그래프 숨기기' : '그래프 보기';
+
+        if (isHidden && !anonChartInstance) {
+            const ctx = document.getElementById('anonChart');
+            const values = {{ chart_values_json | safe }};
+            anonChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ chart_labels_json | safe }},
+                    datasets: [{
+                        label: '잔액 ({{ group.currency_label }})',
+                        data: values,
+                        backgroundColor: values.map(v => v < 0 ? '#b23a3a' : '{{ group.theme_color }}')
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

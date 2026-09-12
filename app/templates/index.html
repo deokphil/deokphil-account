@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="landing">
+    <p class="lead">카드 게임과 그룹 활동의 판돈/포인트를 안전하게 기록하고 조회합니다.</p>
+
+    <div class="role-cards">
+        <a class="role-card" href="/login">
+            <h2>수퍼유저</h2>
+            <p>그룹 생성 및 관리자 배정</p>
+        </a>
+        <a class="role-card" href="/login">
+            <h2>그룹 관리자</h2>
+            <p>멤버 관리 및 계좌(입출금) 관리</p>
+        </a>
+        <a class="role-card" href="/member/login">
+            <h2>멤버</h2>
+            <p>내 잔액 조회 및 전체 현황 그래프</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
